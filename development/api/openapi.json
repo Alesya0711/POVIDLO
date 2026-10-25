@@ -1,0 +1,2962 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Капибанк",
+    "description": "Кредитный кабинет для бизнеса: продукты, заявки, рассмотрение и помощь с условиями.",
+    "version": "0.3.0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080",
+      "description": "Объединённый контейнер: FastAPI, API и собранный фронтенд на одном origin"
+    },
+    {
+      "url": "http://127.0.0.1:8000",
+      "description": "Отдельный сервер для разработки; Vite проксирует /api без переписывания пути"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Healthcheck",
+        "operationId": "healthcheck_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Healthcheck Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/products": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Получить каталог продуктов",
+        "operationId": "listProducts",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Поиск по подстроке названия без учёта регистра, пробелы по краям удаляются. Пустая строка не фильтрует.",
+              "title": "Search"
+            },
+            "description": "Поиск по подстроке названия без учёта регистра, пробелы по краям удаляются. Пустая строка не фильтрует."
+          },
+          {
+            "name": "purpose",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "working_capital",
+                    "equipment",
+                    "growth"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Общая категория. Универсальные продукты также включаются.",
+              "title": "Purpose"
+            },
+            "description": "Общая категория. Универсальные продукты также включаются."
+          },
+          {
+            "name": "principal",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+                  "description": "Запрошенная сумма в рублях, строго больше нуля."
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Положительная сумма в рублях; включённые границы minimumPrincipal/maximumPrincipal.",
+              "title": "Principal"
+            },
+            "description": "Положительная сумма в рублях; включённые границы minimumPrincipal/maximumPrincipal."
+          },
+          {
+            "name": "termMonths",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Включённые границы срока продукта.",
+              "title": "Termmonths"
+            },
+            "description": "Включённые границы срока продукта."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductList"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректные query-параметры",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Каталог временно недоступен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Неожиданная внутренняя ошибка; без stack trace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/products/{productId}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Получить продукт по идентификатору",
+        "operationId": "getProduct",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Productid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Продукт не найден",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Источник временно недоступен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Неожиданная внутренняя ошибка; без stack trace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/recommendations": {
+      "post": {
+        "tags": [
+          "Recommendations"
+        ],
+        "summary": "Подобрать продукты по подтверждённым ответам",
+        "description": "После обязательного допуска к продуктам: точная задача, общая категория, универсальный продукт; затем totalRepayment для одной запрошенной суммы и срока; затем id. Если specificPurpose отсутствует, точного уровня нет. Пустой items с причинами = 200. Подбор не создаёт заявку и не является кредитным решением.",
+        "operationId": "recommendProducts",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionnaireAnswers"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Ошибка полей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Подбор временно недоступен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Неожиданная внутренняя ошибка; без stack trace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/companies/lookup": {
+      "post": {
+        "tags": [
+          "Companies & Scoring"
+        ],
+        "summary": "Проверить ИНН и получить сведения о компании",
+        "operationId": "lookupCompanyByInn",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompanyLookupRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Некорректный формат или контрольная цифра ИНН",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Источник временно недоступен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/companies/precheck": {
+      "post": {
+        "tags": [
+          "Companies & Scoring"
+        ],
+        "summary": "Рассчитать предварительную вероятность одобрения, скоринг и доступную нагрузку",
+        "operationId": "evaluateApplicationPrecheck",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrecheckRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrecheckResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Продукт не найден",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Ошибка полей запроса или ИНН",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Login",
+        "operationId": "loginUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Register",
+        "operationId": "registerClient",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Logout",
+        "operationId": "logoutUser",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Me",
+        "operationId": "getCurrentUserProfile",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Update Me",
+        "operationId": "updateCurrentUserProfile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/applications": {
+      "post": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Create",
+        "operationId": "createApplication",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Listing",
+        "operationId": "listApplications",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 100,
+              "default": "",
+              "title": "Search"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/applications/{appId}": {
+      "get": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Get One",
+        "operationId": "getApplicationById",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Appid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/applications/{appId}/info-requests": {
+      "post": {
+        "tags": [
+          "Application actions"
+        ],
+        "summary": "Request Info",
+        "operationId": "requestApplicationInformation",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Appid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InfoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/applications/{appId}/info-requests/{requestId}/reply": {
+      "post": {
+        "tags": [
+          "Application actions"
+        ],
+        "summary": "Reply Info",
+        "operationId": "replyApplicationInformation",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Appid"
+            }
+          },
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Requestid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InfoReply"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/applications/{appId}/bank-decision": {
+      "post": {
+        "tags": [
+          "Application actions"
+        ],
+        "summary": "Decision",
+        "operationId": "submitBankDecision",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Appid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BankDecisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/applications/{appId}/client-offer-action": {
+      "post": {
+        "tags": [
+          "Application actions"
+        ],
+        "summary": "Offer Action",
+        "operationId": "handleClientOfferAction",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Appid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientOfferActionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/applications/{appId}/contract": {
+      "get": {
+        "tags": [
+          "Application actions"
+        ],
+        "summary": "Contract",
+        "operationId": "getApplicationContract",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Appid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/applications/{appId}/sign-and-issue": {
+      "post": {
+        "tags": [
+          "Application actions"
+        ],
+        "summary": "Sign",
+        "operationId": "signAndIssueLoan",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Appid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignAndIssueRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assistant/messages": {
+      "post": {
+        "tags": [
+          "Assistant"
+        ],
+        "summary": "Send",
+        "operationId": "sendAssistantMessage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistantMessageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistantMessageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assistant/proposals/{proposalId}/confirm": {
+      "post": {
+        "tags": [
+          "Assistant"
+        ],
+        "summary": "Confirm",
+        "operationId": "confirmAssistantProposal",
+        "parameters": [
+          {
+            "name": "proposalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Proposalid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProposalConfirmRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProposalConfirmResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiError": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "fieldErrors": {
+            "items": {
+              "$ref": "#/components/schemas/FieldErrorItem"
+            },
+            "type": "array",
+            "title": "Fielderrors"
+          },
+          "requestId": {
+            "type": "string",
+            "title": "Requestid"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "fieldErrors",
+          "requestId"
+        ],
+        "title": "ApiError"
+      },
+      "ApplicationCreateRequest": {
+        "properties": {
+          "inn": {
+            "type": "string",
+            "maxLength": 12,
+            "minLength": 10,
+            "title": "Inn"
+          },
+          "productId": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Productid"
+          },
+          "principal": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Principal",
+            "description": "Запрошенная сумма в рублях, строго больше нуля."
+          },
+          "termMonths": {
+            "type": "integer",
+            "maximum": 600.0,
+            "minimum": 1.0,
+            "title": "Termmonths"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "working_capital",
+              "equipment",
+              "growth"
+            ],
+            "title": "Purpose"
+          },
+          "requestOtherTerms": {
+            "type": "boolean",
+            "title": "Requestotherterms",
+            "default": false
+          },
+          "comment": {
+            "type": "string",
+            "maxLength": 1000,
+            "title": "Comment",
+            "default": ""
+          },
+          "contactEmail": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contactemail"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "inn",
+          "productId",
+          "principal",
+          "termMonths",
+          "purpose"
+        ],
+        "title": "ApplicationCreateRequest"
+      },
+      "ApplicationListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ApplicationResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "ApplicationListResponse"
+      },
+      "ApplicationResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "userId": {
+            "type": "string",
+            "title": "Userid"
+          },
+          "inn": {
+            "type": "string",
+            "title": "Inn"
+          },
+          "productId": {
+            "type": "string",
+            "title": "Productid"
+          },
+          "productName": {
+            "type": "string",
+            "title": "Productname"
+          },
+          "principal": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Principal",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "termMonths": {
+            "type": "integer",
+            "title": "Termmonths"
+          },
+          "purpose": {
+            "type": "string",
+            "title": "Purpose"
+          },
+          "annualRate": {
+            "type": "string",
+            "title": "Annualrate"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "approvalProbability": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approvalprobability"
+          },
+          "monthlyPayment": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+                "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Monthlypayment"
+          },
+          "requestedPrincipal": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Requestedprincipal",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "requestedTermMonths": {
+            "type": "integer",
+            "title": "Requestedtermmonths"
+          },
+          "company": {
+            "type": "object",
+            "title": "Company"
+          },
+          "offer": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Offer"
+          },
+          "infoRequests": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Inforequests"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "comment": {
+            "type": "string",
+            "title": "Comment"
+          },
+          "contactEmail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contactemail"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/HistoryEventSchema"
+            },
+            "type": "array",
+            "title": "History"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updatedat"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "userId",
+          "inn",
+          "productId",
+          "productName",
+          "principal",
+          "termMonths",
+          "purpose",
+          "annualRate",
+          "status",
+          "score",
+          "approvalProbability",
+          "monthlyPayment",
+          "requestedPrincipal",
+          "requestedTermMonths",
+          "company",
+          "offer",
+          "infoRequests",
+          "version",
+          "comment",
+          "contactEmail",
+          "history",
+          "createdAt",
+          "updatedAt"
+        ],
+        "title": "ApplicationResponse"
+      },
+      "AssistantMessageRequest": {
+        "properties": {
+          "conversationId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Conversationid"
+          },
+          "clientMessageId": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Clientmessageid"
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Message"
+          },
+          "context": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "clientMessageId",
+          "message"
+        ],
+        "title": "AssistantMessageRequest"
+      },
+      "AssistantMessageResponse": {
+        "properties": {
+          "conversationId": {
+            "type": "string",
+            "title": "Conversationid"
+          },
+          "reply": {
+            "type": "string",
+            "title": "Reply"
+          },
+          "dataMode": {
+            "type": "string",
+            "title": "Datamode"
+          },
+          "proposal": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProposalSchema"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "conversationId",
+          "reply",
+          "dataMode"
+        ],
+        "title": "AssistantMessageResponse"
+      },
+      "BankDecisionRequest": {
+        "properties": {
+          "expectedVersion": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expectedversion"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "approve",
+              "reject",
+              "propose_alternative"
+            ],
+            "title": "Action"
+          },
+          "rejectionReason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rejectionreason"
+          },
+          "alternativePrincipal": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+                "description": "Запрошенная сумма в рублях, строго больше нуля."
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alternativeprincipal"
+          },
+          "alternativeTermMonths": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 600.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alternativetermmonths"
+          },
+          "annualRate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+                "description": "Доля единицы: 0.24 означает 24% годовых."
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Annualrate"
+          },
+          "comment": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Comment"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expectedVersion",
+          "action",
+          "comment"
+        ],
+        "title": "BankDecisionRequest"
+      },
+      "ClientOfferActionRequest": {
+        "properties": {
+          "expectedVersion": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expectedversion"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "accept",
+              "request_revision",
+              "reject"
+            ],
+            "title": "Action"
+          },
+          "offerVersion": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Offerversion"
+          },
+          "revisionPrincipal": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+                "description": "Запрошенная сумма в рублях, строго больше нуля."
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revisionprincipal"
+          },
+          "revisionTermMonths": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 600.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revisiontermmonths"
+          },
+          "revisionComment": {
+            "type": "string",
+            "maxLength": 1000,
+            "title": "Revisioncomment",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expectedVersion",
+          "action",
+          "offerVersion"
+        ],
+        "title": "ClientOfferActionRequest"
+      },
+      "CompanyLookupRequest": {
+        "properties": {
+          "inn": {
+            "type": "string",
+            "maxLength": 12,
+            "minLength": 10,
+            "title": "Inn",
+            "description": "ИНН организации (10 цифр) или ИП (12 цифр)"
+          },
+          "questionnaireLegalForm": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "ip",
+                  "ooo"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Questionnairelegalform"
+          },
+          "questionnaireIndustry": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "trade",
+                  "services",
+                  "manufacturing",
+                  "other"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Questionnaireindustry"
+          },
+          "questionnaireBusinessAgeMonths": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Questionnairebusinessagemonths"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "inn"
+        ],
+        "title": "CompanyLookupRequest"
+      },
+      "CompanyProfileResponse": {
+        "properties": {
+          "inn": {
+            "type": "string",
+            "title": "Inn"
+          },
+          "profileId": {
+            "type": "string",
+            "title": "Profileid"
+          },
+          "isSyntheticDemo": {
+            "type": "boolean",
+            "title": "Issyntheticdemo",
+            "default": true
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "legalForm": {
+            "type": "string",
+            "enum": [
+              "ip",
+              "ooo"
+            ],
+            "title": "Legalform"
+          },
+          "industry": {
+            "type": "string",
+            "enum": [
+              "trade",
+              "services",
+              "manufacturing",
+              "other"
+            ],
+            "title": "Industry"
+          },
+          "registrationDate": {
+            "type": "string",
+            "title": "Registrationdate"
+          },
+          "businessAgeMonths": {
+            "type": "integer",
+            "title": "Businessagemonths"
+          },
+          "registryStatus": {
+            "type": "string",
+            "title": "Registrystatus"
+          },
+          "revenue": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Revenue",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "previousRevenue": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Previousrevenue",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "operatingExpenses": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Operatingexpenses",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "existingMonthlyPayments": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Existingmonthlypayments",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "creditHistoryStatus": {
+            "type": "string",
+            "title": "Credithistorystatus"
+          },
+          "pastDays": {
+            "type": "integer",
+            "title": "Pastdays"
+          },
+          "currentDays": {
+            "type": "integer",
+            "title": "Currentdays"
+          },
+          "hasBankRestriction": {
+            "type": "boolean",
+            "title": "Hasbankrestriction"
+          },
+          "bankRestrictionReason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bankrestrictionreason"
+          },
+          "settlementAccount": {
+            "type": "string",
+            "title": "Settlementaccount"
+          },
+          "supportingRecords": {
+            "items": {
+              "$ref": "#/components/schemas/SupportingRecordSchema"
+            },
+            "type": "array",
+            "title": "Supportingrecords"
+          },
+          "discrepancies": {
+            "items": {
+              "$ref": "#/components/schemas/DiscrepancyItem"
+            },
+            "type": "array",
+            "title": "Discrepancies"
+          },
+          "reportingDate": {
+            "type": "string",
+            "title": "Reportingdate"
+          },
+          "dataVersion": {
+            "type": "string",
+            "title": "Dataversion"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "inn",
+          "profileId",
+          "name",
+          "legalForm",
+          "industry",
+          "registrationDate",
+          "businessAgeMonths",
+          "registryStatus",
+          "revenue",
+          "previousRevenue",
+          "operatingExpenses",
+          "existingMonthlyPayments",
+          "creditHistoryStatus",
+          "pastDays",
+          "currentDays",
+          "hasBankRestriction",
+          "bankRestrictionReason",
+          "settlementAccount",
+          "supportingRecords",
+          "discrepancies",
+          "reportingDate",
+          "dataVersion"
+        ],
+        "title": "CompanyProfileResponse"
+      },
+      "DiscrepancyItem": {
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field"
+          },
+          "questionnaireValue": {
+            "type": "string",
+            "title": "Questionnairevalue"
+          },
+          "simulatorValue": {
+            "type": "string",
+            "title": "Simulatorvalue"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "field",
+          "questionnaireValue",
+          "simulatorValue",
+          "message"
+        ],
+        "title": "DiscrepancyItem"
+      },
+      "FieldErrorItem": {
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "field",
+          "message"
+        ],
+        "title": "FieldErrorItem"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HistoryEventSchema": {
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "initiator": {
+            "type": "string",
+            "title": "Initiator"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "timestamp",
+          "initiator",
+          "action",
+          "description"
+        ],
+        "title": "HistoryEventSchema"
+      },
+      "InfoReply": {
+        "properties": {
+          "expectedVersion": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expectedversion"
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expectedVersion",
+          "message"
+        ],
+        "title": "InfoReply"
+      },
+      "InfoRequest": {
+        "properties": {
+          "expectedVersion": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expectedversion"
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expectedVersion",
+          "message"
+        ],
+        "title": "InfoRequest"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Password"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest"
+      },
+      "PrecheckRequest": {
+        "properties": {
+          "inn": {
+            "type": "string",
+            "maxLength": 12,
+            "minLength": 10,
+            "title": "Inn"
+          },
+          "productId": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Productid"
+          },
+          "principal": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Principal",
+            "description": "Запрошенная сумма в рублях, строго больше нуля."
+          },
+          "termMonths": {
+            "type": "integer",
+            "maximum": 600.0,
+            "minimum": 1.0,
+            "title": "Termmonths"
+          },
+          "purpose": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "working_capital",
+                  "equipment",
+                  "growth"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Purpose"
+          },
+          "userRevenueOverride": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+                "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userrevenueoverride"
+          },
+          "userOperatingExpensesOverride": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+                "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Useroperatingexpensesoverride"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "inn",
+          "productId",
+          "principal",
+          "termMonths"
+        ],
+        "title": "PrecheckRequest"
+      },
+      "PrecheckResponse": {
+        "properties": {
+          "inn": {
+            "type": "string",
+            "title": "Inn"
+          },
+          "productId": {
+            "type": "string",
+            "title": "Productid"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "canSubmitStandard": {
+            "type": "boolean",
+            "title": "Cansubmitstandard"
+          },
+          "canRequestOtherTerms": {
+            "type": "boolean",
+            "title": "Canrequestotherterms"
+          },
+          "approvalProbability": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approvalprobability"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "riskBand": {
+            "type": "string",
+            "title": "Riskband"
+          },
+          "monthlyPayment": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Monthlypayment",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "totalRepayment": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Totalrepayment",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "totalInterest": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Totalinterest",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "operatingCash": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Operatingcash",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "availableCash": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Availablecash",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "paymentLimit": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Paymentlimit",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "isAffordable": {
+            "type": "boolean",
+            "title": "Isaffordable"
+          },
+          "factors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Factors"
+          },
+          "blockReason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Blockreason"
+          },
+          "hasDiscrepancyWithSimulator": {
+            "type": "boolean",
+            "title": "Hasdiscrepancywithsimulator"
+          },
+          "rulesVersion": {
+            "type": "string",
+            "title": "Rulesversion"
+          },
+          "dataVersion": {
+            "type": "string",
+            "title": "Dataversion"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "inn",
+          "productId",
+          "status",
+          "canSubmitStandard",
+          "canRequestOtherTerms",
+          "approvalProbability",
+          "score",
+          "riskBand",
+          "monthlyPayment",
+          "totalRepayment",
+          "totalInterest",
+          "operatingCash",
+          "availableCash",
+          "paymentLimit",
+          "isAffordable",
+          "factors",
+          "blockReason",
+          "hasDiscrepancyWithSimulator",
+          "rulesVersion",
+          "dataVersion"
+        ],
+        "title": "PrecheckResponse"
+      },
+      "Product": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "purposeCategories": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "working_capital",
+                "equipment",
+                "growth"
+              ]
+            },
+            "type": "array",
+            "title": "Purposecategories"
+          },
+          "industries": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Industries"
+          },
+          "legalForms": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "ip",
+                "ooo"
+              ]
+            },
+            "type": "array",
+            "title": "Legalforms"
+          },
+          "minimumBusinessAgeMonths": {
+            "type": "integer",
+            "minimum": 6.0,
+            "title": "Minimumbusinessagemonths"
+          },
+          "minimumPrincipal": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Minimumprincipal",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "maximumPrincipal": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Maximumprincipal",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "minimumTermMonths": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Minimumtermmonths"
+          },
+          "maximumTermMonths": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Maximumtermmonths"
+          },
+          "annualRate": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+            "title": "Annualrate",
+            "description": "Доля единицы: 0.24 означает 24% годовых."
+          },
+          "specificPurposes": {
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{0,63}$"
+            },
+            "type": "array",
+            "title": "Specificpurposes"
+          },
+          "isUniversal": {
+            "type": "boolean",
+            "title": "Isuniversal",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "purposeCategories",
+          "industries",
+          "legalForms",
+          "minimumBusinessAgeMonths",
+          "minimumPrincipal",
+          "maximumPrincipal",
+          "minimumTermMonths",
+          "maximumTermMonths",
+          "annualRate"
+        ],
+        "title": "Product"
+      },
+      "ProductList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "ProductList"
+      },
+      "ProfileUpdateRequest": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "company": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 1,
+            "title": "Company"
+          },
+          "legalForm": {
+            "type": "string",
+            "title": "Legalform"
+          },
+          "industry": {
+            "type": "string",
+            "title": "Industry"
+          },
+          "industryDescription": {
+            "type": "string",
+            "maxLength": 200,
+            "title": "Industrydescription",
+            "default": ""
+          },
+          "businessAgeMonths": {
+            "type": "string",
+            "title": "Businessagemonths"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "company",
+          "legalForm",
+          "industry",
+          "businessAgeMonths"
+        ],
+        "title": "ProfileUpdateRequest"
+      },
+      "ProposalConfirmRequest": {
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Revision"
+          },
+          "context": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "revision"
+        ],
+        "title": "ProposalConfirmRequest"
+      },
+      "ProposalConfirmResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "default": "confirmed"
+          },
+          "targetField": {
+            "type": "string",
+            "title": "Targetfield"
+          },
+          "confirmedValue": {
+            "title": "Confirmedvalue"
+          },
+          "revision": {
+            "type": "integer",
+            "title": "Revision"
+          }
+        },
+        "type": "object",
+        "required": [
+          "targetField",
+          "confirmedValue",
+          "revision"
+        ],
+        "title": "ProposalConfirmResponse"
+      },
+      "ProposalSchema": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "targetField": {
+            "type": "string",
+            "title": "Targetfield"
+          },
+          "proposedValue": {
+            "title": "Proposedvalue"
+          },
+          "explanation": {
+            "type": "string",
+            "title": "Explanation"
+          },
+          "revision": {
+            "type": "integer",
+            "title": "Revision"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "targetField",
+          "proposedValue",
+          "explanation",
+          "revision"
+        ],
+        "title": "ProposalSchema"
+      },
+      "QuestionnaireAnswers": {
+        "properties": {
+          "industry": {
+            "type": "string",
+            "enum": [
+              "trade",
+              "services",
+              "manufacturing",
+              "other"
+            ],
+            "title": "Industry"
+          },
+          "legalForm": {
+            "type": "string",
+            "enum": [
+              "ip",
+              "ooo"
+            ],
+            "title": "Legalform"
+          },
+          "businessAgeMonths": {
+            "type": "integer",
+            "maximum": 1200.0,
+            "minimum": 0.0,
+            "title": "Businessagemonths"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "working_capital",
+              "equipment",
+              "growth"
+            ],
+            "title": "Purpose"
+          },
+          "principal": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Principal",
+            "description": "Запрошенная сумма в рублях, строго больше нуля."
+          },
+          "termMonths": {
+            "type": "integer",
+            "maximum": 600.0,
+            "minimum": 1.0,
+            "title": "Termmonths"
+          },
+          "industryDescription": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Industrydescription"
+          },
+          "specificPurpose": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Specificpurpose"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "industry",
+          "legalForm",
+          "businessAgeMonths",
+          "purpose",
+          "principal",
+          "termMonths"
+        ],
+        "title": "QuestionnaireAnswers"
+      },
+      "RecommendationItem": {
+        "properties": {
+          "product": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "rank": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Rank"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Reasons"
+          },
+          "monthlyPayment": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Monthlypayment",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "totalRepayment": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Totalrepayment",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          },
+          "totalInterest": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "title": "Totalinterest",
+            "description": "Неотрицательная сумма в рублях, десятичная строка с двумя знаками, например 1250000.00."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "product",
+          "rank",
+          "reasons",
+          "monthlyPayment",
+          "totalRepayment",
+          "totalInterest"
+        ],
+        "title": "RecommendationItem"
+      },
+      "RecommendationResult": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RecommendationItem"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "unmatchedReasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Unmatchedreasons"
+          },
+          "rulesVersion": {
+            "type": "string",
+            "title": "Rulesversion"
+          },
+          "dataVersion": {
+            "type": "string",
+            "title": "Dataversion"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "items",
+          "unmatchedReasons",
+          "rulesVersion",
+          "dataVersion"
+        ],
+        "title": "RecommendationResult"
+      },
+      "RegisterRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 8,
+            "title": "Password"
+          },
+          "fullName": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Fullname"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "email",
+          "password",
+          "fullName"
+        ],
+        "title": "RegisterRequest"
+      },
+      "SignAndIssueRequest": {
+        "properties": {
+          "expectedVersion": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expectedversion"
+          },
+          "settlementAccount": {
+            "type": "string",
+            "pattern": "^\\d{20}$",
+            "title": "Settlementaccount"
+          },
+          "contractVersion": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Contractversion"
+          },
+          "confirmed": {
+            "type": "boolean",
+            "title": "Confirmed"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expectedVersion",
+          "settlementAccount",
+          "contractVersion",
+          "confirmed"
+        ],
+        "title": "SignAndIssueRequest"
+      },
+      "SupportingRecordSchema": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "period": {
+            "type": "string",
+            "title": "Period"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "verificationResult": {
+            "type": "string",
+            "title": "Verificationresult"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "title",
+          "period",
+          "source",
+          "verificationResult",
+          "summary"
+        ],
+        "title": "SupportingRecordSchema"
+      },
+      "TokenResponse": {
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "title": "Accesstoken"
+          },
+          "tokenType": {
+            "type": "string",
+            "title": "Tokentype",
+            "default": "bearer"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "fullName": {
+            "type": "string",
+            "title": "Fullname"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "boundInn": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Boundinn"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "accessToken",
+          "role",
+          "fullName",
+          "email",
+          "boundInn"
+        ],
+        "title": "TokenResponse"
+      },
+      "UserProfileResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "fullName": {
+            "type": "string",
+            "title": "Fullname"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "boundInn": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Boundinn"
+          },
+          "profile": {
+            "type": "object",
+            "title": "Profile"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "fullName",
+          "role",
+          "boundInn"
+        ],
+        "title": "UserProfileResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {},
+            "tokenUrl": "/api/v1/auth/login"
+          }
+        }
+      }
+    }
+  }
+}

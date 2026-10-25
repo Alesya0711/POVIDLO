@@ -1,0 +1,33 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@theme {
+  --font-sans: "Nunito Sans Variable", "Segoe UI", sans-serif;
+  --color-cream: var(--canvas);
+  --color-paper: var(--surface);
+  --color-oat: var(--oat);
+  --color-coffee: var(--secondary);
+  --color-espresso: var(--ink);
+  --color-cocoa: var(--muted);
+  --color-forest: var(--forest);
+  --color-sage: var(--sage);
+  --color-caramel: var(--caramel);
+  --color-milk-caramel: var(--caramelSoft);
+  --radius-control: 12px;
+  --radius-panel: 24px;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+  body { margin: 0; min-width: 320px; background: var(--canvas); color: var(--ink); font-size: 18px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+  button, a, summary { touch-action: manipulation; }
+  button, summary { cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--forest); outline-offset: 5px; }
+  ::selection { background: var(--caramelSoft); color: var(--ink); }
+  summary::-webkit-details-marker { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+}

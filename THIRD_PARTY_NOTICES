@@ -1,0 +1,46 @@
+# Сторонние компоненты и лицензии
+
+## Интерфейс приложения
+
+- React и React DOM 19.3.1, Meta Platforms, Inc. и участники сообщества, MIT. https://github.com/facebook/react
+- decimal.js 10.6.0, Michael Mclaughlin, MIT. Используется для предварительного расчёта аннуитетного платежа в браузере, а не для кредитного решения. Текст лицензии находится в `public/licenses/decimal-js-MIT.txt`. https://github.com/MikeMcl/decimal.js
+- React Router 8.5.0, Shopify Inc., Remix Software Inc. и участники сообщества, MIT. https://github.com/remix-run/react-router
+- Vite 8.3.5 и @vitejs/plugin-react 6.1.2, MIT. https://github.com/vitejs/vite
+- TypeScript 7.0.2, Microsoft Corporation, Apache-2.0. https://github.com/microsoft/TypeScript
+- Tailwind CSS и @tailwindcss/vite 4.3.3, Tailwind Labs, MIT. https://github.com/tailwindlabs/tailwindcss
+- @types/react и @types/react-dom 19.3.0, участники DefinitelyTyped, MIT. https://github.com/DefinitelyTyped/DefinitelyTyped
+- Nunito Sans из @fontsource-variable/nunito-sans 5.3.0, OFL-1.1. Текст лицензии находится в `public/licenses/nunito-sans-OFL.txt`. https://fontsource.org/fonts/nunito-sans
+
+Корневой `package-lock.json` фиксирует версии, контрольные суммы и метаданные лицензий прямых и транзитивных npm-зависимостей. Шрифт поставляется локально.
+
+## Сервер и база данных
+
+- Python 3.12, Python Software Foundation License. https://docs.python.org/3/license.html
+- FastAPI и Starlette, MIT. https://github.com/fastapi/fastapi https://github.com/encode/starlette
+- SQLModel и SQLAlchemy, MIT. https://github.com/fastapi/sqlmodel https://github.com/sqlalchemy/sqlalchemy
+- Alembic, MIT. https://github.com/sqlalchemy/alembic
+- PostgreSQL, PostgreSQL License. https://www.postgresql.org/about/licence/
+- Uvicorn, BSD 3-Clause. https://github.com/encode/uvicorn
+- Pydantic и Pydantic Settings, MIT. https://github.com/pydantic/pydantic https://github.com/pydantic/pydantic-settings
+- PyJWT и Passlib, MIT. https://github.com/jpadilla/pyjwt https://github.com/glic3a/passlib
+
+Версии прямых Python-зависимостей зафиксированы в `kapibank-backend/requirements.txt`.
+
+## Инструменты разработки палитры
+
+- apca-w3 0.1.9, Andrew Somers / Myndex, Limited W3 License. Лицензия: `development/tools/palette/licenses/apca-w3-LICENSE.md`. Исходный код: https://github.com/Myndex/apca-w3
+- colorparsley 0.1.8, Andrew Somers, пакет заявляет AGPL v3. Лицензия: `development/tools/palette/licenses/colorparsley-LICENSE.md`. Пакет является транзитивной зависимостью локального инструмента APCA.
+
+Эти пакеты устанавливаются локально для расчётов палитры и не включаются в веб-приложение. Фиксация версий находится в `development/tools/palette/package-lock.json`.
+
+## Изображения маскота
+
+Концепт Капибанкира находится в `development/mascot/kapibankir-concept-v1.png`; текстовые запросы - в `development/mascot/`. Используемые интерфейсом PNG-файлы размещены в `assets/mascot/`. Концепт и иллюстрации созданы встроенным генератором изображений OpenAI. Для просмотра файлов не требуется API или подписка; внешние референсы не использовались.
+
+## Модель и демонстрационные данные
+
+- GPT OSS 120B, идентификатор модели `openai/gpt-oss-120b`, веса распространяются по Apache-2.0. Веса модели не входят в поставку. https://huggingface.co/openai/gpt-oss-120b
+- Groq предоставляет внешний API для генерации ответов со своими условиями и лимитами. Ключ API хранится на сервере. https://console.groq.com/docs/model/openai/gpt-oss-120b
+
+Приложение использует синтетические учебные данные и моделирует банковские интеграции, включая проверку сведений о компаниях и кредитной истории. Помощник может обращаться к Groq при наличии настроенного ключа или работать в явно выбранном stub-режиме. Приложение не выдаёт реальные кредиты, не переводит деньги и не выполняет юридически значимое подписание.
+

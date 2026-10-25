@@ -1,0 +1,485 @@
+{
+  "info": {
+    "name": "Kapibank integration 0.3.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Use the cookie jar. Switch client/staff login as indicated. Set applicationId, requestId, current expectedVersion, offerVersion, contractVersion and account from responses before each action. Use a new submissionKey for a new submission and clientMessageId for a new message. All financial operations are synthetic."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8080"
+    },
+    {
+      "key": "applicationId",
+      "value": ""
+    },
+    {
+      "key": "requestId",
+      "value": ""
+    },
+    {
+      "key": "expectedVersion",
+      "value": "1"
+    },
+    {
+      "key": "offerVersion",
+      "value": "1"
+    },
+    {
+      "key": "contractVersion",
+      "value": ""
+    },
+    {
+      "key": "settlementAccount",
+      "value": ""
+    },
+    {
+      "key": "submissionKey",
+      "value": "postman-submission-1"
+    },
+    {
+      "key": "clientMessageId",
+      "value": "postman-message-1"
+    },
+    {
+      "key": "proposalId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Register client",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/auth/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"integration.client@example.com\",\n  \"password\": \"client123\",\n  \"fullName\": \"Тестовый клиент\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Client login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"client@kapibank.demo\",\n  \"password\": \"client123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Current session",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/auth/me"
+      }
+    },
+    {
+      "name": "Save profile",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/auth/me",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Тестовый клиент\",\n  \"email\": \"client@kapibank.demo\",\n  \"company\": \"Тестовая мастерская\",\n  \"legalForm\": \"ooo\",\n  \"industry\": \"trade\",\n  \"industryDescription\": \"\",\n  \"businessAgeMonths\": \"24\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Catalog",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/products"
+      }
+    },
+    {
+      "name": "Product",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/products/demo-working-capital"
+      }
+    },
+    {
+      "name": "Recommendations",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/recommendations",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"industry\": \"trade\",\n  \"legalForm\": \"ooo\",\n  \"businessAgeMonths\": 24,\n  \"purpose\": \"working_capital\",\n  \"principal\": \"1000000.00\",\n  \"termMonths\": 24\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Company lookup",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/companies/lookup",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"inn\": \"7701000019\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Precheck",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/companies/precheck",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"inn\": \"7701000019\",\n  \"productId\": \"demo-working-capital\",\n  \"principal\": \"2000000.00\",\n  \"termMonths\": 12,\n  \"purpose\": \"working_capital\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Create application requesting other terms",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{submissionKey}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/applications",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"inn\": \"7701000019\",\n  \"productId\": \"demo-working-capital\",\n  \"principal\": \"2000000.00\",\n  \"termMonths\": 12,\n  \"purpose\": \"working_capital\",\n  \"requestOtherTerms\": true,\n  \"comment\": \"Прошу подобрать допустимые условия\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "List applications",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/applications"
+      }
+    },
+    {
+      "name": "Application",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/applications/{{applicationId}}"
+      }
+    },
+    {
+      "name": "Staff login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"staff@kapibank.demo\",\n  \"password\": \"staff123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Staff request information",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/applications/{{applicationId}}/info-requests",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"expectedVersion\": {{expectedVersion}},\n  \"message\": \"Уточните назначение средств\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Client reply (log in as owner first)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/applications/{{applicationId}}/info-requests/{{requestId}}/reply",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"expectedVersion\": {{expectedVersion}},\n  \"message\": \"Для расширения тестовой мастерской\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Staff alternative offer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/applications/{{applicationId}}/bank-decision",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"expectedVersion\": {{expectedVersion}},\n  \"action\": \"propose_alternative\",\n  \"alternativePrincipal\": \"1200000.00\",\n  \"alternativeTermMonths\": 24,\n  \"annualRate\": \"0.26\",\n  \"comment\": \"Допустимые демонстрационные условия\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Client accept offer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/applications/{{applicationId}}/client-offer-action",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"expectedVersion\": {{expectedVersion}},\n  \"offerVersion\": {{offerVersion}},\n  \"action\": \"accept\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Contract summary",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/applications/{{applicationId}}/contract"
+      }
+    },
+    {
+      "name": "Client simulate signing and issuance",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/applications/{{applicationId}}/sign-and-issue",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"expectedVersion\": {{expectedVersion}},\n  \"contractVersion\": \"{{contractVersion}}\",\n  \"settlementAccount\": \"{{settlementAccount}}\",\n  \"confirmed\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Assistant message",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/assistant/messages",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clientMessageId\": \"{{clientMessageId}}\",\n  \"message\": \"полтора миллиона\",\n  \"context\": {\n    \"screen\": \"questionnaire\",\n    \"field\": \"principal\",\n    \"data\": {\n      \"answers\": {\n        \"principal\": \"1000000\"\n      }\n    }\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Confirm assistant proposal",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/assistant/proposals/{{proposalId}}/confirm",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"revision\": 1,\n  \"context\": {\n    \"screen\": \"questionnaire\",\n    \"field\": \"principal\",\n    \"data\": {\n      \"answers\": {\n        \"principal\": \"1000000\"\n      }\n    }\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/auth/logout",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

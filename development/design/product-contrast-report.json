@@ -1,0 +1,117 @@
+{
+  "library": "apca-w3@0.1.9",
+  "font": "Nunito Sans Variable",
+  "note": "Project thresholds and generic font lookup; not font-specific or whole-site certification.",
+  "pairs": [
+    {
+      "name": "Заголовок продукта",
+      "foreground": "#574C41",
+      "background": "#FAF7F0",
+      "size": 36,
+      "weight": 800,
+      "target": 60,
+      "lc": 84.12,
+      "lookupMinimumPx": 16,
+      "pass": true
+    },
+    {
+      "name": "Описание",
+      "foreground": "#62564A",
+      "background": "#FAF7F0",
+      "size": 18,
+      "weight": 400,
+      "target": 75,
+      "lc": 80.02,
+      "lookupMinimumPx": 17.25,
+      "pass": true
+    },
+    {
+      "name": "Требования",
+      "foreground": "#302820",
+      "background": "#FAF7F0",
+      "size": 18,
+      "weight": 700,
+      "target": 75,
+      "lc": 96.57,
+      "lookupMinimumPx": 13.5,
+      "pass": true
+    },
+    {
+      "name": "Текст калькулятора",
+      "foreground": "#302820",
+      "background": "#FFFFFF",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 101.26,
+      "lookupMinimumPx": 13.5,
+      "pass": true
+    },
+    {
+      "name": "Ввод суммы и срока",
+      "foreground": "#302820",
+      "background": "#FFFFFF",
+      "size": 24,
+      "weight": 700,
+      "target": 75,
+      "lc": 101.26,
+      "lookupMinimumPx": 13,
+      "pass": true
+    },
+    {
+      "name": "Результат расчёта",
+      "foreground": "#354B3A",
+      "background": "#DFE6D8",
+      "size": 28,
+      "weight": 800,
+      "target": 60,
+      "lc": 75.69,
+      "lookupMinimumPx": 16,
+      "pass": true
+    },
+    {
+      "name": "Подпись результата",
+      "foreground": "#354B3A",
+      "background": "#DFE6D8",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 75.69,
+      "lookupMinimumPx": 15,
+      "pass": true
+    },
+    {
+      "name": "Ошибка поля",
+      "foreground": "#81382F",
+      "background": "#F9E8E1",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 76.35,
+      "lookupMinimumPx": 15,
+      "pass": true
+    },
+    {
+      "name": "Плашка заявки",
+      "foreground": "#302820",
+      "background": "#EEE7DB",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 87.48,
+      "lookupMinimumPx": 14.625,
+      "pass": true
+    },
+    {
+      "name": "Основное действие",
+      "foreground": "#FAF7F0",
+      "background": "#354B3A",
+      "size": 16,
+      "weight": 700,
+      "target": 75,
+      "lc": -90.95,
+      "lookupMinimumPx": 14,
+      "pass": true
+    }
+  ]
+}

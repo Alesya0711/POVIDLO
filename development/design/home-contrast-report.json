@@ -1,0 +1,117 @@
+{
+  "library": "apca-w3@0.1.9",
+  "font": "Nunito Sans Variable",
+  "note": "Project thresholds and generic font lookup; not font-specific or whole-site certification.",
+  "pairs": [
+    {
+      "name": "Основной текст",
+      "foreground": "#302820",
+      "background": "#FAF7F0",
+      "size": 18,
+      "weight": 400,
+      "target": 90,
+      "lc": 96.57,
+      "lookupMinimumPx": 15.5,
+      "pass": true
+    },
+    {
+      "name": "Пояснения",
+      "foreground": "#62564A",
+      "background": "#FAF7F0",
+      "size": 18,
+      "weight": 400,
+      "target": 75,
+      "lc": 80.02,
+      "lookupMinimumPx": 17.25,
+      "pass": true
+    },
+    {
+      "name": "Навигация и подписи",
+      "foreground": "#574C41",
+      "background": "#FAF7F0",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 84.12,
+      "lookupMinimumPx": 14.81,
+      "pass": true
+    },
+    {
+      "name": "Заголовки",
+      "foreground": "#574C41",
+      "background": "#FAF7F0",
+      "size": 30,
+      "weight": 800,
+      "target": 60,
+      "lc": 84.12,
+      "lookupMinimumPx": 16,
+      "pass": true
+    },
+    {
+      "name": "Акцентный заголовок",
+      "foreground": "#354B3A",
+      "background": "#FAF7F0",
+      "size": 40,
+      "weight": 800,
+      "target": 60,
+      "lc": 87.17,
+      "lookupMinimumPx": 16,
+      "pass": true
+    },
+    {
+      "name": "Кнопка",
+      "foreground": "#FAF7F0",
+      "background": "#354B3A",
+      "size": 16,
+      "weight": 700,
+      "target": 75,
+      "lc": -90.95,
+      "lookupMinimumPx": 14,
+      "pass": true
+    },
+    {
+      "name": "Текст тёмного раздела",
+      "foreground": "#FAF7F0",
+      "background": "#354B3A",
+      "size": 18,
+      "weight": 400,
+      "target": 90,
+      "lc": -90.95,
+      "lookupMinimumPx": 16,
+      "pass": true
+    },
+    {
+      "name": "Подпись маскота",
+      "foreground": "#302820",
+      "background": "#FFFFFF",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 101.26,
+      "lookupMinimumPx": 13.5,
+      "pass": true
+    },
+    {
+      "name": "Номер шага",
+      "foreground": "#302820",
+      "background": "#EEE7DB",
+      "size": 18,
+      "weight": 800,
+      "target": 60,
+      "lc": 87.48,
+      "lookupMinimumPx": 16,
+      "pass": true
+    },
+    {
+      "name": "Недоступный вход",
+      "foreground": "#574C41",
+      "background": "#EEE7DB",
+      "size": 16,
+      "weight": 700,
+      "target": 60,
+      "lc": 75.03,
+      "lookupMinimumPx": 14,
+      "pass": true
+    }
+  ]
+}

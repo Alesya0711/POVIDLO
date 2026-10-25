@@ -1,0 +1,33 @@
+:root {
+  --canvas: #FAF7F0;
+  --canvas: oklch(from #FAF7F0 l c h);
+  --surface: #FFFFFF;
+  --surface: oklch(from #FFFFFF l c h);
+  --oat: #EEE7DB;
+  --oat: oklch(from #EEE7DB l c h);
+  --ink: #302820;
+  --ink: oklch(from #302820 l c h);
+  --secondary: #574C41;
+  --secondary: oklch(from #574C41 l c h);
+  --muted: #62564A;
+  --muted: oklch(from #62564A l c h);
+  --forest: #354B3A;
+  --forest: oklch(from #354B3A l c h);
+  --sage: #DFE6D8;
+  --sage: oklch(from #DFE6D8 l c h);
+  --caramel: #D5A06A;
+  --caramel: oklch(from #D5A06A l c h);
+  --caramelSoft: #EAC9A2;
+  --caramelSoft: oklch(from #EAC9A2 l c h);
+  --honey: #F2D8A7;
+  --honey: oklch(from #F2D8A7 l c h);
+  --warning: #684410;
+  --warning: oklch(from #684410 l c h);
+  --error: #81382F;
+  --error: oklch(from #81382F l c h);
+  --errorSurface: #F9E8E1;
+  --errorSurface: oklch(from #F9E8E1 l c h);
+  --radius-control: 12px;
+  --radius-panel: 24px;
+  --radius-pill: 999px;
+}

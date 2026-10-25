@@ -1,0 +1,95 @@
+{
+  "library": "apca-w3@0.1.9",
+  "font": "Nunito Sans Variable",
+  "note": "Project thresholds and generic font lookup; not font-specific or whole-site certification.",
+  "pairs": [
+    {
+      "name": "Заголовок очереди",
+      "foreground": "#574C41",
+      "background": "#FAF7F0",
+      "size": 36,
+      "weight": 800,
+      "target": 60,
+      "lc": 84.12,
+      "lookupMinimumPx": 16,
+      "pass": true
+    },
+    {
+      "name": "Описание",
+      "foreground": "#62564A",
+      "background": "#FAF7F0",
+      "size": 18,
+      "weight": 400,
+      "target": 75,
+      "lc": 80.02,
+      "lookupMinimumPx": 17.25,
+      "pass": true
+    },
+    {
+      "name": "Плашка и статусы",
+      "foreground": "#574C41",
+      "background": "#EEE7DB",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 75.03,
+      "lookupMinimumPx": 15,
+      "pass": true
+    },
+    {
+      "name": "Компания и сумма",
+      "foreground": "#574C41",
+      "background": "#FAF7F0",
+      "size": 18,
+      "weight": 700,
+      "target": 75,
+      "lc": 84.12,
+      "lookupMinimumPx": 14,
+      "pass": true
+    },
+    {
+      "name": "Поля фильтра",
+      "foreground": "#302820",
+      "background": "#FFFFFF",
+      "size": 18,
+      "weight": 400,
+      "target": 75,
+      "lc": 101.26,
+      "lookupMinimumPx": 15,
+      "pass": true
+    },
+    {
+      "name": "Запрос сведений",
+      "foreground": "#354B3A",
+      "background": "#DFE6D8",
+      "size": 16,
+      "weight": 700,
+      "target": 75,
+      "lc": 75.69,
+      "lookupMinimumPx": 14,
+      "pass": true
+    },
+    {
+      "name": "Раскрытые сведения",
+      "foreground": "#574C41",
+      "background": "#FFFFFF",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 88.82,
+      "lookupMinimumPx": 14.625,
+      "pass": true
+    },
+    {
+      "name": "Сброс фильтров",
+      "foreground": "#FAF7F0",
+      "background": "#354B3A",
+      "size": 16,
+      "weight": 700,
+      "target": 75,
+      "lc": -90.95,
+      "lookupMinimumPx": 14,
+      "pass": true
+    }
+  ]
+}

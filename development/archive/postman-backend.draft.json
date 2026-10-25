@@ -1,0 +1,112 @@
+{
+  "info": {
+    "name": "Kapibank frontend integration — DRAFT",
+    "description": "Contract 0.2.0-draft. Frontend decisions for backend confirmation; endpoints are not implemented byход the frontend. Same-origin production container, separate development repositories. Synthetic data only.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8080",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "demo-working-capital",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "List products (draft)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/products"
+      }
+    },
+    {
+      "name": "List products with optional filters (draft)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/products?search=%D0%BA%D1%80%D0%B5%D0%B4%D0%B8%D1%82&purpose=working_capital&principal=1250000.00&termMonths=24"
+      }
+    },
+    {
+      "name": "Get product (draft)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/products/{{productId}}"
+      }
+    },
+    {
+      "name": "Recommend products (draft)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"industry\": \"trade\",\n  \"legalForm\": \"ip\",\n  \"businessAgeMonths\": 24,\n  \"purpose\": \"working_capital\",\n  \"principal\": \"1250000.00\",\n  \"termMonths\": 24\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/api/v1/recommendations"
+      }
+    },
+    {
+      "name": "Recommend other industry with description (draft)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"industry\": \"other\",\n  \"legalForm\": \"ip\",\n  \"businessAgeMonths\": 24,\n  \"purpose\": \"working_capital\",\n  \"principal\": \"1250000.00\",\n  \"termMonths\": 24,\n  \"industryDescription\": \"Студия керамики\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/api/v1/recommendations"
+      }
+    }
+  ]
+}

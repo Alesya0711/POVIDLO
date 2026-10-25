@@ -1,0 +1,73 @@
+{
+  "library": "apca-w3@0.1.9",
+  "font": "Nunito Sans Variable",
+  "note": "Project thresholds and generic font lookup; not font-specific or whole-site certification.",
+  "pairs": [
+    {
+      "name": "Кнопка помощника",
+      "foreground": "#574C41",
+      "background": "#FAF7F0",
+      "size": 16,
+      "weight": 700,
+      "target": 75,
+      "lc": 84.12,
+      "lookupMinimumPx": 14,
+      "pass": true
+    },
+    {
+      "name": "Подсказки",
+      "foreground": "#302820",
+      "background": "#FFFFFF",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 101.26,
+      "lookupMinimumPx": 13.5,
+      "pass": true
+    },
+    {
+      "name": "Поле вопроса",
+      "foreground": "#302820",
+      "background": "#FFFFFF",
+      "size": 18,
+      "weight": 400,
+      "target": 90,
+      "lc": 101.26,
+      "lookupMinimumPx": 15,
+      "pass": true
+    },
+    {
+      "name": "Плашка режима",
+      "foreground": "#354B3A",
+      "background": "#DFE6D8",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 75.69,
+      "lookupMinimumPx": 15,
+      "pass": true
+    },
+    {
+      "name": "Объяснение",
+      "foreground": "#62564A",
+      "background": "#FAF7F0",
+      "size": 18,
+      "weight": 400,
+      "target": 75,
+      "lc": 80.02,
+      "lookupMinimumPx": 17.25,
+      "pass": true
+    },
+    {
+      "name": "Недоступная отправка",
+      "foreground": "#574C41",
+      "background": "#EEE7DB",
+      "size": 16,
+      "weight": 700,
+      "target": 75,
+      "lc": 75.03,
+      "lookupMinimumPx": 14,
+      "pass": true
+    }
+  ]
+}

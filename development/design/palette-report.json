@@ -1,0 +1,122 @@
+{
+  "library": "apca-w3@0.1.9",
+  "algorithm": "0.0.98G-4g",
+  "note": "APCA draft guidance; signed Lc preserves text/background polarity. Font lookup is guidance, not a font-specific certification.",
+  "colors": {
+    "canvas": "#FAF7F0",
+    "surface": "#FFFFFF",
+    "oat": "#EEE7DB",
+    "ink": "#302820",
+    "secondary": "#574C41",
+    "muted": "#62564A",
+    "forest": "#354B3A",
+    "sage": "#DFE6D8",
+    "caramel": "#D5A06A",
+    "caramelSoft": "#EAC9A2",
+    "honey": "#F2D8A7",
+    "warning": "#684410",
+    "error": "#81382F",
+    "errorSurface": "#F9E8E1"
+  },
+  "pairs": [
+    {
+      "name": "Основной текст",
+      "fg": "#302820",
+      "bg": "#FAF7F0",
+      "size": 16,
+      "weight": 400,
+      "target": 90,
+      "lc": 96.57,
+      "lookupMinimumPx": 15.5,
+      "pass": true
+    },
+    {
+      "name": "Текст на белом",
+      "fg": "#302820",
+      "bg": "#FFFFFF",
+      "size": 16,
+      "weight": 400,
+      "target": 90,
+      "lc": 101.26,
+      "lookupMinimumPx": 15,
+      "pass": true
+    },
+    {
+      "name": "Подписи",
+      "fg": "#574C41",
+      "bg": "#FAF7F0",
+      "size": 16,
+      "weight": 500,
+      "target": 75,
+      "lc": 84.12,
+      "lookupMinimumPx": 15.81,
+      "pass": true
+    },
+    {
+      "name": "Вторичный текст",
+      "fg": "#62564A",
+      "bg": "#FAF7F0",
+      "size": 18,
+      "weight": 400,
+      "target": 75,
+      "lc": 80.02,
+      "lookupMinimumPx": 17.25,
+      "pass": true
+    },
+    {
+      "name": "Основная кнопка",
+      "fg": "#FAF7F0",
+      "bg": "#354B3A",
+      "size": 16,
+      "weight": 700,
+      "target": 75,
+      "lc": -90.95,
+      "lookupMinimumPx": 14,
+      "pass": true
+    },
+    {
+      "name": "Успешный статус",
+      "fg": "#354B3A",
+      "bg": "#DFE6D8",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 75.69,
+      "lookupMinimumPx": 15,
+      "pass": true
+    },
+    {
+      "name": "Карамельный акцент",
+      "fg": "#302820",
+      "bg": "#EAC9A2",
+      "size": 18,
+      "weight": 700,
+      "target": 60,
+      "lc": 73.01,
+      "lookupMinimumPx": 14.5,
+      "pass": true
+    },
+    {
+      "name": "Предупреждение",
+      "fg": "#684410",
+      "bg": "#F2D8A7",
+      "size": 18,
+      "weight": 600,
+      "target": 60,
+      "lc": 68.43,
+      "lookupMinimumPx": 16.5,
+      "pass": true
+    },
+    {
+      "name": "Ошибка",
+      "fg": "#81382F",
+      "bg": "#F9E8E1",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 76.35,
+      "lookupMinimumPx": 15,
+      "pass": true
+    }
+  ]
+}

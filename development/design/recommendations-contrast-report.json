@@ -1,0 +1,95 @@
+{
+  "library": "apca-w3@0.1.9",
+  "font": "Nunito Sans Variable",
+  "note": "Project thresholds and generic font lookup; not font-specific or whole-site certification.",
+  "pairs": [
+    {
+      "name": "Заголовок",
+      "foreground": "#574C41",
+      "background": "#FAF7F0",
+      "size": 32,
+      "weight": 800,
+      "target": 60,
+      "lc": 84.12,
+      "lookupMinimumPx": 16,
+      "pass": true
+    },
+    {
+      "name": "Пояснения",
+      "foreground": "#62564A",
+      "background": "#FAF7F0",
+      "size": 18,
+      "weight": 400,
+      "target": 75,
+      "lc": 80.02,
+      "lookupMinimumPx": 17.25,
+      "pass": true
+    },
+    {
+      "name": "Заголовок предложения",
+      "foreground": "#574C41",
+      "background": "#FFFFFF",
+      "size": 30,
+      "weight": 800,
+      "target": 60,
+      "lc": 88.82,
+      "lookupMinimumPx": 16,
+      "pass": true
+    },
+    {
+      "name": "Текст предложения",
+      "foreground": "#302820",
+      "background": "#FFFFFF",
+      "size": 18,
+      "weight": 400,
+      "target": 90,
+      "lc": 101.26,
+      "lookupMinimumPx": 15,
+      "pass": true
+    },
+    {
+      "name": "Подпись в карточке",
+      "foreground": "#302820",
+      "background": "#FFFFFF",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 101.26,
+      "lookupMinimumPx": 13.5,
+      "pass": true
+    },
+    {
+      "name": "Деморежим и подтверждение",
+      "foreground": "#354B3A",
+      "background": "#DFE6D8",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 75.69,
+      "lookupMinimumPx": 15,
+      "pass": true
+    },
+    {
+      "name": "Сводка и сравнение",
+      "foreground": "#302820",
+      "background": "#EEE7DB",
+      "size": 16,
+      "weight": 600,
+      "target": 75,
+      "lc": 87.48,
+      "lookupMinimumPx": 14.625,
+      "pass": true
+    },
+    {
+      "name": "Главная кнопка",
+      "foreground": "#FAF7F0",
+      "background": "#354B3A",
+      "size": 16,
+      "weight": 700,
+      "target": 75,
+      "lc": -90.95,
+      "lookupMinimumPx": 14,
+      "pass": true
+    }
+  ]
+}

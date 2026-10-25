@@ -1,0 +1,20 @@
+services:
+  kapibank:
+    build:
+      context: ../..
+      dockerfile: development/docker/Dockerfile.backend
+    container_name: kapibank-app
+    restart: unless-stopped
+    env_file:
+      - ../../kapibank-backend/.env
+    environment:
+      POSTGRES_SERVER: 127.0.0.1
+      PORT: 8080
+    ports:
+      - "8080:8080"
+      - "8000:8080"
+    volumes:
+      - kapibank_pgdata:/var/lib/postgresql/data
+
+volumes:
+  kapibank_pgdata:
